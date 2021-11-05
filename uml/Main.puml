@@ -1,0 +1,90 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Main extends Application
+class FXMLController implements Initializable
+class Lists
+interface Initializable
+class Application
+class Task
+
+
+FXMLController <|- Lists
+FXMLController <|- Task
+
+class Main
+{
++start(Stage window) throws IOException
++main(String []args)
+}
+
+class FXMLController
+{
++public Button addLi;
++public TextField listField;
++public MenuItem removList;
++public MenuItem saveList;
++public MenuItem loadList;
++public MenuItem saveAll;
++public MenuItem loadMulti;
+
++public Button newTask;
++public TextField descriptionField;
++public TextField dueDateField;
++public TextField completeField;
++public MenuItem remTask;
+
++public ListView<HashMap<Lists,Task>> list;
++public TableView<Task> tableView;
++public TableColumn<Task,String> descriptCol;
++public TableColumn<Task,String> dueDateCol;
++public TableColumn<Task,String> CheckCol;
+
++public void initialize(URL url, ResourceBundle rb)
++public void changeDescript(TableColumn.CellEditEvent editedCell)
++public void changeDate(TableColumn.CellEditEvent editedCell)
++public void changeComp(TableColumn.CellEditEvent editedCell)
++public void addTaskButton()
++public void removeTaskButton()
++public void displayComp()
++public void displayIncomp()
+
+
++public void addListButton()
++public void removeListButton()
++public void saveListButton()
++public void loadListButton()
++public void saveAllButton()
++public void loadMultiButton()
+
+}
+
+class Task
+{
++private CheckBox completed;
++private final SimpleStringProperty description;
++private final SimpleStringProperty dueDate;
+
++public String getCompleted()
++public CheckBox getCompleted()
++public void setCompleted(CheckBox completed)
++public String getDescription()
++public SimpleStringProperty descriptionProperty()
++public void setDescription(String description)
++public SimpleStringProperty getDueDate()
++public void setDueDate(String dueDate)
+}
+
+class Lists
+{
+ +private SimpleStringProperty nameList;
+
+ +public String getNameList()
+ +public SimpleStringProperty nameListProperty()
+ +public void setNameList(String nameList)
+ +public Lists(String nameList)
+
+}
+
+
+@enduml
