@@ -162,8 +162,16 @@ public class FXMLController implements Initializable {
 
     //removes a task from a list
     public int removeTaskButton() {
-        //user right clicks and selects remove task
-        //remTask is triggered and gets the selected cell and removed it from the tableView
+
+        remTask.setOnAction(event-> {
+
+            // get the task that user selected
+            Task selected = tableView.getSelectionModel().getSelectedItem();
+
+            //remove it from the tableview
+            tableView.getItems().remove(selected);
+        });
+
         //return 1 to signify success
         return 1;
 
