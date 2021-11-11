@@ -5,21 +5,22 @@
 
 package ucf.assignments;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.css.PseudoClass;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class FXMLController implements Initializable {
 
@@ -34,78 +35,66 @@ public class FXMLController implements Initializable {
     public TextField descriptionField;
     public TextField dueDateField;
     public MenuItem remTask;
-    public RadioButton displayAll;
-    public RadioButton displayInc;
-    public RadioButton displayComp;
+    public RadioButton allButton;
+    public RadioButton incButton;
+    public RadioButton compButton;
 
 
     // table related
     public ObservableList<Task> toDos = FXCollections.observableArrayList();
+    public ObservableList<Task> compItems = FXCollections.observableArrayList();
+    public ObservableList<Task> incItems = FXCollections.observableArrayList();
+
+
     public TableView<Task> tableView;
     public TableColumn<Task, String> descriptCol;
     public TableColumn<Task, String> dueDateCol;
     public TableColumn<Task, String> CheckCol;
 
     @Override
+    //initializes the application
     public void initialize(URL url, ResourceBundle rb) {
 
         //groups the radio buttons together so only one can be selected at a time
         final ToggleGroup group = new ToggleGroup();
-        displayAll.setToggleGroup(group);
-        displayInc.setToggleGroup(group);
-        displayComp.setToggleGroup(group);
+        allButton.setToggleGroup(group);
+        incButton.setToggleGroup(group);
+        compButton.setToggleGroup(group);
 
         //selects display all by default
-        displayAll.setSelected(true);
+        allButton.setSelected(true);
 
+        //create the columns
         descriptCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         dueDateCol.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
-        CheckCol.setCellValueFactory(new PropertyValueFactory<>("completed"));
+        CheckCol.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().descriptionProperty().toString()));
 
+        //set the table to be editable and allow the description column and dueDate column
         tableView.setEditable(true);
         descriptCol.setCellFactory(TextFieldTableCell.forTableColumn());
         dueDateCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        CheckCol.setCellFactory(col -> isChecked());
+        tableView.setPlaceholder(new Label("No tasks to display.\nTry adding one below."));
 
+    }
+
+    public void displayAll()
+    {
+        allButton.setOnAction(e -> tableView.setItems(toDos));
     }
 
     //this method will allow a user to display only completed tasks
-    public int displayComp() {
-       /*
-       initialize a fitleredList and display all data
-       set the filter predicate when the filter changes
-       if no boxes are checked, display none
-       compare the row's completion status with a checked check-box
-       if it is a match return true to the predicate
-       if it doesn't match return false to the predicate
-       put the filtered list in a sorted list
-       user the comparator to put the sorted list in the tableview
-       add the sorted list to the tableview
-       */
-
-        return 1;
-
+    public void displayComp()
+    {
+        compButton.setOnAction(e -> tableView.setItems(compItems));
     }
 
     //this method will allow a user to display only incomplete tasks
-    public int displayIncomp() {
-        /*
-       initialize a fitleredList and display all data
-       set the filter predicate when the filter changes
-       if all boxes are checked, display none
-       compare the row's completion status with an unchecked check-box
-       if it is a match return true to the predicate
-       if it doesn't match return false to the predicate
-       put the filtered list in a sorted list
-       user the comparator to put the sorted list in the tableview
-       add the sorted list to the tableview
-
-        return 1 to signify success
-
-       */
-
+    public int displayIncomp()
+    {
+        incButton.setOnAction(e -> tableView.setItems(incItems));
         return 1;
     }
-
 
     //this method will allow the user to change the description by double-clicking on the cell
     public int changeDescript(TableColumn.CellEditEvent change) {
@@ -113,7 +102,6 @@ public class FXMLController implements Initializable {
         selected.setDescription(change.getNewValue().toString());
 
         return 1;
-
     }
 
     //this method will allow the user to change the due date by double-clicking on the cell
@@ -126,17 +114,15 @@ public class FXMLController implements Initializable {
 
             selected.setDueDate(change.getNewValue().toString());
             return 1;
-        }
-        else {
+        } else {
 
             return 0;
         }
-
-
     }
 
     //adds a task to a list
     public int addTaskButton() {
+
         //user clicks add task button
         newTask.setOnAction(event -> {
 
@@ -145,36 +131,46 @@ public class FXMLController implements Initializable {
                     || !descriptionField.getText().isBlank() && isValid(dueDateField.getText())) {
 
                 //add description field and due date field to observable list
-                toDos.add(new Task(descriptionField.getText(), dueDateField.getText()));
+                Task errand = new Task(descriptionField.getText(), dueDateField.getText());
+                toDos.add(errand);
+
                 //refresh the table
                 tableView.setItems(toDos);
+                dueDateField.clear();
+                descriptionField.clear();
+                dueDateField.setPromptText("YYYY-MM-DD");
+
             }
             //change the prompt text to let user know that they inputted an invalid format
             else {
                 dueDateField.setPromptText("Not a valid format!");
+                dueDateField.clear();
             }
+
         });
 
         //return 1 to signify success
         return 1;
-
     }
 
     //removes a task from a list
     public int removeTaskButton() {
 
-        remTask.setOnAction(event-> {
+        //user clicks the remove task button
+        remTask.setOnAction(event -> {
 
             // get the task that user selected
             Task selected = tableView.getSelectionModel().getSelectedItem();
-
             //remove it from the tableview
             tableView.getItems().remove(selected);
+            compItems.remove(selected);
+            incItems.remove(selected);
+            toDos.remove(selected);
+
         });
 
         //return 1 to signify success
         return 1;
-
     }
 
     //save a single list
@@ -185,8 +181,6 @@ public class FXMLController implements Initializable {
         //save selected cell
         //return 1 to signify success
         return 1;
-
-
     }
 
     //load a single list
@@ -197,33 +191,6 @@ public class FXMLController implements Initializable {
         //open selected file
         //return 1 to signify success
         return 1;
-
-    }
-
-    //save all the lists in the list manager
-    public int saveAllButton() {
-        //user clicks on menubar and selects file
-        //user selects save all
-        //saveALl is triggered
-        //select all cells in listView
-        //open save-dialog from desktop
-        //save all cells
-        //return 1 to signify success
-        return 1;
-
-    }
-
-    //load mulitple lists from file explorer
-    public int loadMultiButton() {
-        //user clicks on menubar and selects file
-        //user selects load multiple lists
-        //loadALl is triggered
-        //open open-dialog from desktop
-        //allow user to select multiple lists from file explorer
-        //open all lists
-        //return 1 to signify success
-        return 1;
-
     }
 
     //checks if user inputted a valid date in the correct format
@@ -250,4 +217,30 @@ public class FXMLController implements Initializable {
 
     }
 
+    public CheckBoxTableCell<Task, String> isChecked() {
+
+        //if checkbox is checked or not
+        BooleanProperty comp = new SimpleBooleanProperty();
+
+        CheckBoxTableCell<Task, String> row = new CheckBoxTableCell<>(index -> comp);
+
+        // update set of selected indices if checkbox state changes:
+        comp.addListener((obs, wasSelected, isNowSelected) -> {
+
+            int cell = row.getIndex();
+            Task pass = tableView.getItems().get(cell);
+
+            if (isNowSelected && !compItems.contains(pass)) {
+                compItems.add(pass);
+            }
+
+
+        });
+
+        /*compItems.addListener((ListChangeListener<? super Task>) (change) -> comp.set(compItems.contains(tableView.getItems().get(row.getIndex())))); */
+
+        //row.itemProperty().addListener((obs, oldItem, newItem) -> comp.set(newItem != null && compItems.contains(newItem)));
+        return row;
+
+    }
 }

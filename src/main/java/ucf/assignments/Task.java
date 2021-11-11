@@ -12,22 +12,11 @@ public class Task {
 
     private SimpleStringProperty description;
     private SimpleStringProperty dueDate;
-    private CheckBox completed;
 
     public Task(String description, String dueDate) {
         this.description = new SimpleStringProperty(description);
         this.dueDate = new SimpleStringProperty(dueDate);
-        this.completed =  new CheckBox();
     }
-
-    public CheckBox getCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(CheckBox completed) {
-        this.completed = completed;
-    }
-
 
     public String getDescription() {
         return description.get();
@@ -40,7 +29,6 @@ public class Task {
     public void setDescription(String description) {
         this.description = new SimpleStringProperty(description);
     }
-
 
     public SimpleStringProperty dueDateProperty() {
         return dueDate;

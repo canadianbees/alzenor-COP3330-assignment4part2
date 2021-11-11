@@ -24,7 +24,6 @@ public class Main extends Application {
         Parent root = loader.load();
 
         Scene scene = new Scene(root);
-        window.setMaximized(true);
         window.setScene(scene);
         window.show();
     }
