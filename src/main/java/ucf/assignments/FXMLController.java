@@ -7,11 +7,17 @@ package ucf.assignments;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -39,10 +45,19 @@ public class FXMLController implements Initializable {
     public TableColumn<Task, String> descriptCol;
     public TableColumn<Task, String> dueDateCol;
     public TableColumn<Task, String> CheckCol;
+    public BorderPane borderP;
+
+    FileChooser fileChoose = new FileChooser();
+
 
     @Override
     //initializes the application
     public void initialize(URL url, ResourceBundle rb) {
+
+        //directory for saving
+        System.out.println("before direct");
+        fileChoose.setInitialDirectory(new File("/ucf/assignments/"));
+        System.out.println("after direct");
 
         //groups the radio buttons together so only one can be selected at a time
         final ToggleGroup group = new ToggleGroup();
@@ -62,37 +77,34 @@ public class FXMLController implements Initializable {
         tableView.setEditable(true);
         descriptCol.setCellFactory(TextFieldTableCell.forTableColumn());
         dueDateCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        //CheckCol.setCellFactory(col -> Actions.isChecked(tableView, compItems));
         tableView.setPlaceholder(new Label("No tasks to display.\nTry adding one below."));
 
     }
 
-    public void displayAll() {
+    public void displayAll(ActionEvent event) {
 
-        allButton.setOnAction(e -> {
-            System.out.println("displaying all");
-            tableView.setItems(toDos);
-        });
+        System.out.println("displaying all");
+        tableView.setItems(toDos);
+
     }
 
     //this method will allow a user to display only completed tasks
-    public void displayComp() {
+    public void displayComp(ActionEvent event) {
 
-        compButton.setOnAction(e -> {
-            System.out.println("displaying comp");
-            Validation.getChecked(tableView, compItems, incItems);
-            tableView.setItems(compItems);
-        });
+
+        System.out.println("displaying comp");
+        Validation.getChecked(tableView, compItems, incItems);
+        tableView.setItems(compItems);
+
     }
 
     //this method will allow a user to display only incomplete tasks
-    public void displayIncomp() {
+    public void displayIncomp(ActionEvent event) {
 
-        incButton.setOnAction(e -> {
-            System.out.println("displaying inc");
-            Validation.getChecked(tableView, compItems, incItems);
-            tableView.setItems(incItems);
-        });
+        System.out.println("displaying inc");
+        Validation.getChecked(tableView, compItems, incItems);
+        tableView.setItems(incItems);
+
     }
 
     //this method will allow the user to change the description by double-clicking on the cell
@@ -123,60 +135,62 @@ public class FXMLController implements Initializable {
     }
 
     //adds a task to a list
-    public void addTaskButton() {
+    public void addTaskButton(ActionEvent event) {
 
         //user clicks add task button
-        newTask.setOnAction(event -> {
 
-            //create a new task with the string from the textfields
-            //since it is a new task, it will be incomplete at first
-            Task errand = new Task(descriptionField.getText(), dueDateField.getText(), false);
 
-            //if user inputs a valid date and the description field is not empty or blank
-            if (Validation.isDateValid(dueDateField.getText()) && Validation.isDescrValid(descriptionField.getText())) {
+        //create a new task with the string from the textfields
+        //since it is a new task, it will be incomplete at first
+        Task errand = new Task(descriptionField.getText(), dueDateField.getText(), false);
 
-                Actions.addTask(tableView, toDos, errand);
-                incItems.add(errand);
-                dueDateField.clear();
-                descriptionField.clear();
-                dueDateField.setPromptText("YYYY-MM-DD");
-                descriptionField.setPromptText("What are you doing?");
-            }
+        //if user inputs a valid date and the description field is not empty or blank
+        if (Validation.isDateValid(dueDateField.getText()) && Validation.isDescrValid(descriptionField.getText())) {
 
-            //change the prompt text to let user know that they inputted an invalid format
-            else if (Validation.isDescrValid(descriptionField.getText()) && !Validation.isDateValid(dueDateField.getText())) {
-                dueDateField.setPromptText("Not a valid format!");
-                dueDateField.clear();
-            } else {
-                dueDateField.setPromptText("Not a valid format!");
-                dueDateField.clear();
-                descriptionField.setPromptText("Too short!");
-                descriptionField.clear();
-            }
+            Actions.addTask(tableView, toDos, errand);
+            incItems.add(errand);
+            dueDateField.clear();
+            descriptionField.clear();
+            dueDateField.setPromptText("YYYY-MM-DD");
+            descriptionField.setPromptText("What are you doing?");
+        }
 
-        });
+        //change the prompt text to let user know that they inputted an invalid format
+        else if (Validation.isDescrValid(descriptionField.getText()) && !Validation.isDateValid(dueDateField.getText())) {
+            dueDateField.setPromptText("Not a valid format!");
+            dueDateField.clear();
+        } else {
+            dueDateField.setPromptText("Not a valid format!");
+            dueDateField.clear();
+            descriptionField.setPromptText("Too short!");
+            descriptionField.clear();
+        }
+
 
     }
 
     //removes a task from a list
-    public int removeTaskButton() {
+    public int removeTaskButton(ActionEvent event) {
 
         //user clicks the remove task button
-        remTask.setOnAction(event -> Actions.removeTask(tableView, compItems, incItems, toDos));
+        Actions.removeTask(tableView, compItems, incItems, toDos);
 
         //return 1 to signify success
         return 1;
     }
 
     //save a single list
-    public void saveListButton() {
+    public void saveListButton(ActionEvent event) {
 
-        //saveList.setOnAction(event -> Actions.toCSV(tableView, ) );
+
+        Window stage = borderP.getScene().getWindow();
+        Actions.save(stage, fileChoose, tableView);
+
 
     }
 
     //load a single list
-    public int loadListButton() {
+    public int loadListButton(ActionEvent event) {
         //user right clicks on listView and selects save list
         //loadList is triggered
         //open open-dialog from desktop
