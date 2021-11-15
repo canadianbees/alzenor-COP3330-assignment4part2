@@ -11,6 +11,7 @@ import javafx.scene.control.TableView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.regex.*;
 
 public class Validation {
 
@@ -67,8 +68,12 @@ public class Validation {
     }
 
     public static boolean isDescrValid(String df) {
+
         //returns true if the string is between 1 and 256 characters
-        return !df.isEmpty() && !df.isBlank() && df.length() <= 256;
+        return !df.isEmpty() && !df.isBlank()
+                && df.length() <= 256 && !Validation.isDateValid(df)
+                && !df.equals("false")
+                && !df.equals("true");
 
     }
 
