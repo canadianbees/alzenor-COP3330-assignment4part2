@@ -12,10 +12,21 @@ public class Task {
 
     private SimpleStringProperty description;
     private SimpleStringProperty dueDate;
+    private boolean complete;
+    private CheckBox selected;
 
-    public Task(String description, String dueDate) {
+    public Task(String description, String dueDate, Boolean complete) {
         this.description = new SimpleStringProperty(description);
         this.dueDate = new SimpleStringProperty(dueDate);
+        this.selected = new CheckBox();
+    }
+
+    public boolean isComplete() {
+        return complete;
+    }
+
+    public void setComplete(boolean complete) {
+        this.complete = complete;
     }
 
     public String getDescription() {
@@ -40,6 +51,14 @@ public class Task {
 
     public String getDueDate() {
         return dueDate.get();
+    }
+
+    public CheckBox getSelected() {
+        return selected;
+    }
+
+    public void setSelected(CheckBox selected) {
+        this.selected = selected;
     }
 
 }
