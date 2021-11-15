@@ -12,15 +12,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.IOException;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage window) throws IOException {
+
         window.setTitle("List Manager");
-        FXMLLoader loader =  new FXMLLoader(getClass().getResource("mainStage.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("mainStage.fxml"));
         Parent root = loader.load();
 
         Scene scene = new Scene(root);
@@ -28,8 +28,8 @@ public class Main extends Application {
         window.show();
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         launch(args);
     }
+
 }

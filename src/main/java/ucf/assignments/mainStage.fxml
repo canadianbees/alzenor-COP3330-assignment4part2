@@ -15,12 +15,14 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="844.0" prefWidth="992.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ucf.assignments.FXMLController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="844.0"
+            prefWidth="992.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ucf.assignments.FXMLController">
     <top>
         <MenuBar prefHeight="3.0" prefWidth="1034.0" BorderPane.alignment="CENTER">
             <Menu mnemonicParsing="false" text="File">
-                <MenuItem fx:id="loadList" mnemonicParsing="false" onAction="#loadListButton" text="Load List" />
-                <MenuItem fx:id="saveList" mnemonicParsing="false" onAction="#saveListButton" text="Save List" />
+                <MenuItem fx:id="loadList" mnemonicParsing="false" onAction="#loadListButton" text="Load List"/>
+                <MenuItem fx:id="saveList" mnemonicParsing="false" onAction="#saveListButton" text="Save List"/>
             </Menu>
         </MenuBar>
     </top>
@@ -30,39 +32,49 @@
                 <contextMenu>
                     <ContextMenu>
                         <items>
-                            <MenuItem fx:id="remTask" mnemonicParsing="false" onAction="#removeTaskButton" text="Remove Task" />
+                            <MenuItem fx:id="remTask" mnemonicParsing="false" onAction="#removeTaskButton"
+                                      text="Remove Task"/>
                         </items>
                     </ContextMenu>
                 </contextMenu>
                 <columns>
-                    <TableColumn fx:id="descriptCol" onEditCommit="#changeDescript" prefWidth="490.40001678466797" text="Description">
+                    <TableColumn fx:id="descriptCol" onEditCommit="#changeDescript" prefWidth="490.40001678466797"
+                                 text="Description">
                         <cellValueFactory>
-                            <PropertyValueFactory property="descr" />
+                            <PropertyValueFactory property="descr"/>
                         </cellValueFactory>
                     </TableColumn>
-                    <TableColumn fx:id="dueDateCol" onEditCommit="#changeDate" prefWidth="94.39996337890625" text="Due Date">
+                    <TableColumn fx:id="dueDateCol" onEditCommit="#changeDate" prefWidth="94.39996337890625"
+                                 text="Due Date">
                         <cellValueFactory>
-                            <PropertyValueFactory property="DD" />
+                            <PropertyValueFactory property="DD"/>
                         </cellValueFactory>
                     </TableColumn>
                     <TableColumn fx:id="CheckCol" prefWidth="49.86676025390625" text="✔">
                         <cellValueFactory>
-                            <PropertyValueFactory property="check" />
+                            <PropertyValueFactory property="check"/>
                         </cellValueFactory>
                     </TableColumn>
                 </columns>
             </TableView>
             <Label layoutX="409.0" layoutY="21.0" prefHeight="35.0" prefWidth="69.0" text="Tasks">
                 <font>
-                    <Font size="24.0" />
-                </font></Label>
-            <Button fx:id="newTask" layoutX="693.0" layoutY="758.0" mnemonicParsing="false" onAction="#addTaskButton" text="Add Task" />
-            <TextField fx:id="descriptionField" layoutX="99.0" layoutY="758.0" prefHeight="26.0" prefWidth="193.0" promptText="What are you doing?" />
-            <TextField fx:id="dueDateField" layoutX="401.0" layoutY="758.0" prefHeight="26.0" prefWidth="190.0" promptText="YYYY-MM-DD" />
+                    <Font size="24.0"/>
+                </font>
+            </Label>
+            <Button fx:id="newTask" layoutX="693.0" layoutY="758.0" mnemonicParsing="false" onAction="#addTaskButton"
+                    text="Add Task"/>
+            <TextField fx:id="descriptionField" layoutX="99.0" layoutY="758.0" prefHeight="26.0" prefWidth="193.0"
+                       promptText="What are you doing?"/>
+            <TextField fx:id="dueDateField" layoutX="401.0" layoutY="758.0" prefHeight="26.0" prefWidth="190.0"
+                       promptText="YYYY-MM-DD"/>
 
-            <RadioButton fx:id="allButton" layoutX="799.0" layoutY="248.0" mnemonicParsing="false" onAction="#displayAll" text="Display All" />
-            <RadioButton fx:id="compButton" layoutX="799.0" layoutY="329.0" mnemonicParsing="false" onAction="#displayComp" text="Display Completed" />
-            <RadioButton fx:id="incButton" layoutX="799.0" layoutY="411.0" mnemonicParsing="false" onAction="#displayIncomp" text="Display Incomplete" />
+            <RadioButton fx:id="allButton" layoutX="799.0" layoutY="248.0" mnemonicParsing="false"
+                         onAction="#displayAll" text="Display All"/>
+            <RadioButton fx:id="compButton" layoutX="799.0" layoutY="329.0" mnemonicParsing="false"
+                         onAction="#displayComp" text="Display Completed"/>
+            <RadioButton fx:id="incButton" layoutX="799.0" layoutY="411.0" mnemonicParsing="false"
+                         onAction="#displayIncomp" text="Display Incomplete"/>
         </AnchorPane>
     </right>
 </BorderPane>
