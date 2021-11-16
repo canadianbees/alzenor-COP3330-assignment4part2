@@ -1,5 +1,5 @@
 /*
- *  UCF COP3330 Fall 2021 assignment_name Solution
+ *  UCF COP3330 Fall 2021 Validation Class File
  *  Copyright 2021 Celina Alzenor
  */
 
@@ -18,13 +18,8 @@ public class Validation {
     public static void getChecked(TableView<Task> list, ObservableList<Task> compItems, ObservableList<Task> incItems) {
         for (Task e : list.getItems()) {
 
-            e.getSelected().selectedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) -> {
+            e.getSelect().selectedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) -> {
 
-                System.out.println(e.getDescription());
-                System.out.println("Current state: "+e.isComplete());
-                System.out.println("Before check: "+old_val);
-                System.out.println("After check: "+new_val);
-                System.out.println("\n\n");
                 //if the task is marked completed
                 if (new_val && !e.isComplete()) {
                     e.setComplete(true);
