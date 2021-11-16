@@ -9,16 +9,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import javafx.stage.Window;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
 public class FXMLController implements Initializable {
@@ -26,6 +28,7 @@ public class FXMLController implements Initializable {
     //list related
     public MenuItem saveList;
     public MenuItem loadList;
+
 
     //task related
     public Button newTask;
@@ -45,7 +48,6 @@ public class FXMLController implements Initializable {
     public TableColumn<Task, String> descriptCol;
     public TableColumn<Task, String> dueDateCol;
     public TableColumn<Task, String> CheckCol;
-    public BorderPane borderP;
 
     FileChooser fileChoose = new FileChooser();
 
@@ -56,7 +58,7 @@ public class FXMLController implements Initializable {
 
         //directory for saving
         System.out.println("before direct");
-        fileChoose.setInitialDirectory(new File("/ucf/assignments/"));
+        fileChoose.setInitialDirectory(new File(Paths.get(".").toAbsolutePath().normalize().toString()));
         System.out.println("after direct");
 
         //groups the radio buttons together so only one can be selected at a time
@@ -71,7 +73,7 @@ public class FXMLController implements Initializable {
         //create the columns
         descriptCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         dueDateCol.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
-        CheckCol.setCellValueFactory(new PropertyValueFactory<>("selected"));
+        CheckCol.setCellValueFactory(new PropertyValueFactory<>("select"));
 
         //set the table to be editable and allow the description column and dueDate column
         tableView.setEditable(true);
@@ -137,9 +139,6 @@ public class FXMLController implements Initializable {
     //adds a task to a list
     public void addTaskButton(ActionEvent event) {
 
-        //user clicks add task button
-
-
         //create a new task with the string from the textfields
         //since it is a new task, it will be incomplete at first
         Task errand = new Task(descriptionField.getText(), dueDateField.getText(), false);
@@ -147,7 +146,9 @@ public class FXMLController implements Initializable {
         //if user inputs a valid date and the description field is not empty or blank
         if (Validation.isDateValid(dueDateField.getText()) && Validation.isDescrValid(descriptionField.getText())) {
 
-            Actions.addTask(tableView, toDos, errand);
+            Actions.addTask(toDos,errand);
+            //refresh the table
+            tableView.setItems(toDos);
             incItems.add(errand);
             dueDateField.clear();
             descriptionField.clear();
@@ -166,36 +167,31 @@ public class FXMLController implements Initializable {
             descriptionField.clear();
         }
 
-
     }
 
     //removes a task from a list
-    public int removeTaskButton(ActionEvent event) {
+    public void removeTaskButton(ActionEvent event) {
 
-        //user clicks the remove task button
-        Actions.removeTask(tableView, compItems, incItems, toDos);
-
-        //return 1 to signify success
-        return 1;
+        //user selects the task they want removed from the table
+        Task select = tableView.getSelectionModel().getSelectedItem();
+        //remove from table and all lists
+        tableView.getItems().remove(select);
+        Actions.removeTask(select,compItems, incItems, toDos);
     }
 
     //save a single list
     public void saveListButton(ActionEvent event) {
-
-
-        Window stage = borderP.getScene().getWindow();
-        Actions.save(stage, fileChoose, tableView);
-
-
+        Actions.save(fileChoose,toDos);
     }
 
     //load a single list
     public int loadListButton(ActionEvent event) {
-        //user right clicks on listView and selects save list
-        //loadList is triggered
-        //open open-dialog from desktop
-        //open selected file
-        //return 1 to signify success
+
+        Actions.open(fileChoose,compItems,incItems,toDos);
+        //clear the current list
+        tableView.getItems().clear();
+        //display all items in the list
+        tableView.setItems(toDos);
         return 1;
     }
 
