@@ -3,14 +3,14 @@
 
 class Main extends Application
 class FXMLController implements Initializable
-class Lists
 interface Initializable
 class Application
 class Task
 
 
-FXMLController <|- Lists
+FXMLController <|- Validation
 FXMLController <|- Task
+FXMLController <|- Actions
 
 class Main
 {
@@ -20,21 +20,20 @@ class Main
 
 class FXMLController
 {
-+public Button addLi;
-+public TextField listField;
-+public MenuItem removList;
 +public MenuItem saveList;
 +public MenuItem loadList;
-+public MenuItem saveAll;
-+public MenuItem loadMulti;
 
 +public Button newTask;
 +public TextField descriptionField;
 +public TextField dueDateField;
-+public TextField completeField;
 +public MenuItem remTask;
++public RadioButton allButton;
++public RadioButton incButton;
++public RadioButton compButton;
 
-+public ListView<HashMap<Lists,Task>> list;
++public ObservableList<Task> toDos;
++public ObservableList<Task> compItems;
++public ObservableList<Task> incItems;
 +public TableView<Task> tableView;
 +public TableColumn<Task,String> descriptCol;
 +public TableColumn<Task,String> dueDateCol;
@@ -44,47 +43,57 @@ class FXMLController
 +public void changeDescript(TableColumn.CellEditEvent editedCell)
 +public void changeDate(TableColumn.CellEditEvent editedCell)
 +public void changeComp(TableColumn.CellEditEvent editedCell)
-+public void addTaskButton()
-+public void removeTaskButton()
-+public void displayComp()
-+public void displayIncomp()
++public void addTaskButton(ActionEvent event)
++public void removeTaskButton(ActionEvent event)
++public void displayAll(ActionEvent event)
++public void displayComp(ActionEvent event)
++public void displayIncomp(ActionEvent event)
 
-
-+public void addListButton()
-+public void removeListButton()
-+public void saveListButton()
-+public void loadListButton()
-+public void saveAllButton()
-+public void loadMultiButton()
++public void saveListButton(ActionEvent event)
++public void loadListButton(ActionEvent event)
 
 }
 
 class Task
 {
-+private CheckBox completed;
++private static CheckBox select;
 +private final SimpleStringProperty description;
++private boolean complete;
 +private final SimpleStringProperty dueDate;
 
-+public String getCompleted()
-+public CheckBox getCompleted()
-+public void setCompleted(CheckBox completed)
++public boolean isComplete()
++public void setCompleted(boolean completed)
+
 +public String getDescription()
 +public SimpleStringProperty descriptionProperty()
 +public void setDescription(String description)
++public String getDescription()
+
 +public SimpleStringProperty getDueDate()
 +public void setDueDate(String dueDate)
++public void getDueDate(String dueDate)
+
 }
 
-class Lists
+class Validation
 {
- +private SimpleStringProperty nameList;
++public static void getChecked(TableView<Task> list, ObservableList<Task> compItems, ObservableList<Task> incItems);
++public static boolean isDateValid(String date);
++public static boolean isDescrValid(String df);
 
- +public String getNameList()
- +public SimpleStringProperty nameListProperty()
- +public void setNameList(String nameList)
- +public Lists(String nameList)
 
 }
 
+class Actions
+{
++public static void removeTask(Task select,ObservableList<Task> compItems, ObservableList<Task> incItems, ObservableList<Task> toDos) {
++public static void addTask( ObservableList<Task> list, Task errand) {
++public static void toCSV(ObservableList<Task> all, File file) throws IOException {
++public static void fromCSV( File file, ObservableList<Task> comp, ObservableList<Task> inc, ObservableList<Task> all) throws IOException {
++public static void save(FileChooser saver, ObservableList<Task> all) {
++public static void open(FileChooser saver, ObservableList<Task> comp, ObservableList<Task> inc, ObservableList<Task> all) {
+
+
+}
 
 @enduml
